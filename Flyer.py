@@ -4,48 +4,46 @@ import os, sys
 
 verbose = True
 
-# TODO: use f-string instead
-
 class RenameFile:
     def __init__(self, path_src, path_dest):
         self.src, self.dest = path_src, path_dest
         
     def execute(self):
         if verbose:
-            print("[renaming '{}' to '{}']".format(self.src, self.dest))
+            print(f"[renaming '{self.src}' to '{self.dest}']")
         os.rename(self.src, self.dest)
         
     def undo(self):
         if verbose:
-            print("[renaming '{}' back to '{}']".format(self.dest, self.src))
+            print(f"[renaming '{self.dest}' back to '{self.src}']")
         os.rename(self.dest, self.src)
-        
+
 class CreateFile:
     def __init__(self, path, txt='hello world\n'):
         self.path, self.txt = path, txt
         
     def execute(self):
         if verbose:
-            print("[creating file '{}']".format(self.path))
+            print(f"[creating file '{self.path}']")
         with open(self.path, mode='w', encoding='utf-8') as out_file:
             out_file.write(self.txt)
             
     def undo(self):
         delete_file(self.path)
-        
+
 class ReadFile:
     def __init__(self, path):
         self.path = path
         
     def execute(self):
         if verbose:
-            print("[reading file '{}']".format(self.path))
+            print(f"[reading file '{self.path}']")
         with open(self.path, mode='r', encoding='utf-8') as in_file:
             print(in_file.read(), end='')
 
 def delete_file(path):
     if verbose:
-        print("deleting file '{}'".format(path))
+        print(f"deleting file '{path}'")
     os.remove(path)
     
 def main():
@@ -58,7 +56,7 @@ def main():
     [c.execute() for c in commands]
     answer = input('reverse the executed commands? [y/n]')
     if answer not in 'yY':
-        print("then result is {}".format(new_name))
+        print(f"then result is {new_name}")
         sys.exit(0) # exit(status=0, message=None) ...raise a SytemExit exception.
         
     for c in reversed(commands):
