@@ -1,5 +1,7 @@
 # Use Command Pattern to issue commands like making an order in a restruant.
 # Reference: Mastering Python Design Patterns, Chapter 11.
+
+# TODO: Read source code of requests for human for reference.
 import os, sys
 
 verbose = True
@@ -49,9 +51,10 @@ def delete_file(path):
 def main():
     orig_name, new_name = 'file1', 'file2'
     
-    commands = []
-    for cmd in CreateFile(orig_name), ReadFile(orig_name), RenameFile(orig_name, new_name):
-        commands.append(cmd)
+    # commands = []
+    # for cmd in CreateFile(orig_name), ReadFile(orig_name), RenameFile(orig_name, new_name):
+    #     commands.append(cmd)
+    commands = [cmd for cmd in (CreateFile(orig_name), ReadFile(orig_name), RenameFile(orig_name, new_name))]
         
     [c.execute() for c in commands]
     answer = input('reverse the executed commands? [y/n]')
