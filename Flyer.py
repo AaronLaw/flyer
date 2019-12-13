@@ -63,7 +63,7 @@ def delete_file(path):
         print(f"deleting file '{path}'")
     os.remove(path)
     
-def main():
+def test_undo():
     orig_name, new_name = 'file1', 'file2'
     
     # commands = []
@@ -84,6 +84,9 @@ def main():
             c.undo()
         except AttributeError as e:
             pass
+        
+def main():
+    test_undo()
 
 if __name__ == "__main__":
     main()
