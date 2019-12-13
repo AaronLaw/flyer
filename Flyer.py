@@ -77,7 +77,7 @@ def main():
     answer = input('reverse the executed commands? [y/n]')
     if answer not in 'yY':
         print(f"then result is {new_name}")
-        sys.exit(0) # exit(status=0, message=None) ...raise a SytemExit exception.
+        sys.exit(0) # exit(status=0, message=None) ...raise a SystemExit exception.
         
     for c in reversed(commands):
         try:
