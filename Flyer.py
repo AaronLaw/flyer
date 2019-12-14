@@ -56,6 +56,27 @@ class ReadFile:
             print(in_file.read(), end='')
 
 
+class ShiftModificationTime:
+    """Shift modification time of a file or folder by a given time delta.
+    """
+    def __init__(self, path, time_delta=4*3600):
+        self.path, self.time_delta = path, time_delta
+        
+    def execute(self):
+        if verbose:
+            print(f"[shift file '{self.path}' modification time to ~{self.time_delta}]")
+        st = os.stat(self.path)
+        self.atime = st.st_atime  #access time
+        self.mtime = st.st_mtime  #modification time
+        
+        self.mtime = self.mtime + self.time_delta
+        os.utime(self.path, (self.atime, self.mtime))
+        
+    def undo(self):
+        self.mtime = self.mtime - self.time_delta
+        os.utime(self.path, (self.atime, self.mtime))
+
+
 def delete_file(path):
     """Command that delete a file.
     """
@@ -85,8 +106,19 @@ def test_undo():
         except AttributeError as e:
             pass
         
+def test_shift_modification_time():
+    new_name = 'file1'
+    time_delta = 40*3600
+    
+    commands = [cmd for cmd in (CreateFile(new_name), 
+                                ShiftModificationTime(new_name, time_delta))
+                ]
+    [c.execute() for c in commands]
+    c = ShiftModificationTime(new_name, -2*time_delta).execute()
+    
 def main():
-    test_undo()
+    # test_undo()
+    test_shift_modification_time()
 
 if __name__ == "__main__":
     main()
