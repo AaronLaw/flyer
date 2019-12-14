@@ -40,7 +40,7 @@ class CreateFile:
             out_file.write(self.txt)
             
     def undo(self):
-        delete_file(self.path)
+        DeleteFile(self.path).execute()
 
 
 class ReadFile:
@@ -77,12 +77,16 @@ class ShiftModificationTime:
         os.utime(self.path, (self.atime, self.mtime))
 
 
-def delete_file(path):
+class DeleteFile:
     """Command that delete a file.
     """
-    if verbose:
-        print(f"deleting file '{path}'")
-    os.remove(path)
+    def __init__(self, path):
+        self.path = path
+    
+    def execute(self):
+        if verbose:
+            print(f"deleting file '{self.path}'")
+        os.remove(self.path)
     
 def test_undo():
     orig_name, new_name = 'file1', 'file2'
@@ -117,8 +121,8 @@ def test_shift_modification_time():
     c = ShiftModificationTime(new_name, -2*time_delta).execute()
     
 def main():
-    # test_undo()
-    test_shift_modification_time()
+    test_undo()
+    # test_shift_modification_time()
 
 if __name__ == "__main__":
     main()
