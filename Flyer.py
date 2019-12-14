@@ -84,10 +84,20 @@ class DeleteFile:
         self.path = path
     
     def execute(self):
+        """Deleting file should not be silenced.
+        
+        Asks user to ensure deleting file in verbose.
+        Skip to delete file if not in verbose because we should make sure 
+        it is clear.
+        """
         if verbose:
+            answer = input(f'Are you sure to delete "{self.path}"? [y/n]')
+        if answer in 'yY':
             print(f"deleting file '{self.path}'")
-        os.remove(self.path)
-    
+            os.remove(self.path)
+        print(f'Not to delete {self.path}')
+
+
 def test_undo():
     orig_name, new_name = 'file1', 'file2'
     
