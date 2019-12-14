@@ -94,7 +94,12 @@ class DeleteFile:
             answer = input(f'Are you sure to delete "{self.path}"? [y/n]')
         if answer in 'yY':
             print(f"deleting file '{self.path}'")
-            os.remove(self.path)
+            try:
+                os.remove(self.path)
+            except OSError as e:
+                print(e)
+            else:
+                print(f'delete {self.path} success.')
         print(f'Not to delete {self.path}')
 
 
