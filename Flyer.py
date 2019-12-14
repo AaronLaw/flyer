@@ -1,4 +1,4 @@
-# Use Command Pattern to issue commands like making an order in a restruant.
+# Use Command Pattern to issue commands like making an order in a restaurant.
 # Command pattern: Encapsulate a request as an object, thereby letting you 
 #                  parameterize clients with different requests, queue or 
 #                  log requests, and supports undoable operations.
