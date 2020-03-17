@@ -103,6 +103,36 @@ class DeleteFile:
         print(f'Not to delete {self.path}')
 
 
+class FindFile:
+    """Find file that contains a given char.
+
+    Return a list of finding of filename.
+    """
+    def __init__(self):
+        pass
+
+    def execute(self):
+        pass
+
+
+class SplitFilename:
+    """split filename by a given char.
+
+    Given a filename and a separator, return a list of tokenized filename. 
+    """
+    def __init__(self, path):
+        token = os.path.split(path)
+        pass
+
+    def execute(self):
+        pass
+
+
+class MarkdownToPdf:
+    # Reference: https://github.com/wshuyi/demo-batch-markdown-to-pdf
+    pass
+
+
 def test_undo():
     orig_name, new_name = 'file1', 'file2'
     
@@ -134,7 +164,7 @@ def test_shift_modification_time():
                 ]
     [c.execute() for c in commands]
     c = ShiftModificationTime(new_name, -2*time_delta).execute()
-    
+
 def main():
     test_undo()
     # test_shift_modification_time()
