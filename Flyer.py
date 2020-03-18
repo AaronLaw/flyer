@@ -219,26 +219,36 @@ def test_spilt_file_into_chunks():
         with open(filename,'rt', encoding=encoding) as file_obj:
             for key,group in it.groupby(file_obj, lambda line: line.startswith('----')):
                 if not key:
-                    group = list(group) # convert group object into lists for futher processing.
-                    return group # return a list of chunks
+                    entry = list(group) # convert group object into lists for futher processing.
+                    print(entry[0:5])
+                    # return group # return a list of chunks
+
+                    # entry = get_list_of_content(filename)
+                    # for item in entry:
+                        # print(entry)
+                    date = find_date_for_filename(entry)
+                    write_chunks(date, 'md', entry)
+
+
     def get_filename_from_content():
         pass
         # Format: date-title.md
 
-    def find_date_for_filename(contents, patterns='date: '):
+    def find_date_for_filename(list_of_entry, patterns='date: '):
+        """Give a list containing 'date: ', and return the rest of the line of 'date: '.
+
+        e.g. 'date: 2020-03-20' -> return '2020-03-20'.
+        """
         # to substring a string in a list:
         # Google: python extract a string in a list
         # content[1] is [date: 2020-03-15 22:22:15\n,] => string[5:15]
         # 
         # Google: python regex
-        result = []
-        for item in contents:
-            # if item.startswith('date: '):
-            #     return item
-            import re
-            pattern = '(date:)\s*(\d{4}-\d{2}-\d{2})' # e.g. 'date: 2020-03-20'
-            # title = (title:)\s*(\S+\s*)+ e.g. 'title: Dear diary 電子日記  '
+        import re
+        pattern = '(date:)\s*(\d{4}-\d{2}-\d{2})' # e.g. 'date: 2020-03-20'
+        # title = (title:)\s*(\S+\s*)+ e.g. 'title: Dear diary 電子日記  '
 
+        for item in list_of_entry:
             match = re.search(pattern, item)
             if match:
                 date = match.group(2)
@@ -254,14 +264,17 @@ def test_spilt_file_into_chunks():
         """
         filename = f"{filename}.{ext}"
         with open(filename, 'wt', encoding=encoding) as file_obj:
-            file_obj.write(content)
+            for line in content:
+                file_obj.write(line)
             print(f'Writing {filename}')
 
     # run
-    contents = get_list_of_content(filename)
-    for entry in contents:
-        date = find_date_for_filename(entry)
-        write_chunks(date, 'md', entry)
+    entry = get_list_of_content(filename)
+    # print(entry)
+    # for item in entry:
+    #     # print(entry)
+    #     date = find_date_for_filename(item)
+    #     write_chunks(date, 'md', item)
 
 def main():
     # test_undo()
