@@ -53,7 +53,8 @@ class ReadFile:
         if verbose:
             print(f"[reading file '{self.path}']")
         with open(self.path, mode='r', encoding='utf-8') as in_file:
-            print(in_file.read(), end='')
+            # print(in_file.read(), end='')
+            return in_file.read()
 
 
 class ShiftModificationTime:
@@ -127,10 +128,45 @@ class SplitFilename:
     def execute(self):
         pass
 
+    def undo(self):
+        pass
+
 
 class MarkdownToPdf:
     # Reference: https://github.com/wshuyi/demo-batch-markdown-to-pdf
     pass
+
+
+# class SplitFileIntoChunks:
+#     """Command that split a text file into chunks by a given delimiter.
+#       For preparing text for Hexo, Pelican.
+#
+#       Given a list of files, a delimiter, and Write chunks in folder 'chunks'.
+#     """
+#     def __init__(self, path, delimiter):
+#         self.path = path
+#         self.delimiter = delimiter
+
+#     def execute(self):
+#         try:
+#             import itertools as it
+#         except ImportError:
+#             raise ImportError('Cannot import itertools')
+
+#         with open(self.path, mode='r', encoding='utf-8') as f:
+#             for key, group in it.groupby(f,lambda line: line.startswith(self.delimiter)):
+#                 if not key:
+#                     # group = list(group)
+#                     # print(group)
+#                     for line in group:
+
+#     def undo(self):
+        # """Remove files in folder 'chunks'.
+        # """
+#         pass
+        # if verbose:
+        #     print(f"[renaming '{self.dest}' back to '{self.src}']")
+        # os.rename(self.dest, self.src)
 
 
 def test_undo():
@@ -165,9 +201,72 @@ def test_shift_modification_time():
     [c.execute() for c in commands]
     c = ShiftModificationTime(new_name, -2*time_delta).execute()
 
+def test_spilt_file_into_chunks():
+    import itertools as it
+
+    filename = './sample_data/2020-03.md'
+    # with open(filename, w) as file_obj:
+    #     file_obj.write()
+
+    # file in -> SplitFileIntoChunks::get_list_of_content
+    #         -> ::detemint_filename
+    #               -> find_date
+    #               -> get_date
+    #         -> ::write_chunks -> file out
+    def get_list_of_content(filename, encoding='utf-8'):
+        """Open a file and return a list of contents.
+        """
+        with open(filename,'rt', encoding=encoding) as file_obj:
+            for key,group in it.groupby(file_obj, lambda line: line.startswith('----')):
+                if not key:
+                    group = list(group) # convert group object into lists for futher processing.
+                    return group # return a list of chunks
+    def get_filename_from_content():
+        pass
+        # Format: date-title.md
+
+    def find_date_for_filename(contents, patterns='date: '):
+        # to substring a string in a list:
+        # Google: python extract a string in a list
+        # content[1] is [date: 2020-03-15 22:22:15\n,] => string[5:15]
+        # 
+        # Google: python regex
+        result = []
+        for item in contents:
+            # if item.startswith('date: '):
+            #     return item
+            import re
+            pattern = '(date:)\s*(\d{4}-\d{2}-\d{2})' # e.g. 'date: 2020-03-20'
+            # title = (title:)\s*(\S+\s*)+ e.g. 'title: Dear diary 電子日記  '
+
+            match = re.search(pattern, item)
+            if match:
+                date = match.group(2)
+                return date
+
+    # def get_date(date_line):
+    #     start_idx = date_line.index('date: ')
+    #     end_idx = start_idx + 10
+    #     return date_line[start_idx:end_idx]
+
+    def write_chunks(filename, ext, content, encoding='utf-8'):
+        """Open a file and write the given content.
+        """
+        filename = f"{filename}.{ext}"
+        with open(filename, 'wt', encoding=encoding) as file_obj:
+            file_obj.write(content)
+            print(f'Writing {filename}')
+
+    # run
+    contents = get_list_of_content(filename)
+    for entry in contents:
+        date = find_date_for_filename(entry)
+        write_chunks(date, 'md', entry)
+
 def main():
-    test_undo()
+    # test_undo()
     # test_shift_modification_time()
+    test_spilt_file_into_chunks()
 
 if __name__ == "__main__":
     main()
