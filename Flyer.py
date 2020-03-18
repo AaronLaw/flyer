@@ -201,7 +201,7 @@ def test_shift_modification_time():
     [c.execute() for c in commands]
     c = ShiftModificationTime(new_name, -2*time_delta).execute()
 
-def test_spilt_file_into_chunks():
+def test_split_file_into_chunks():
     import itertools as it
 
     filename = './sample_data/2020-03.md'
