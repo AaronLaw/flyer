@@ -205,62 +205,60 @@ def test_split_file_into_chunks():
     import itertools as it
 
     filename = './sample_data/2020-03.md'
-    # with open(filename, w) as file_obj:
-    #     file_obj.write()
-
     # file in -> SplitFileIntoChunks::get_list_of_content
-    #         -> ::detemint_filename
-    #               -> find_date
-    #               -> get_date
-    #         -> ::write_chunks -> file out
+    #           -> ::detemint_filename
+    #              -> ::find_date
+    #              -> ::get_date
+    #           -> ::write_chunks -> file out
     def get_list_of_content(filename, encoding='utf-8'):
         """Open a file and return a list of contents.
         """
         with open(filename,'rt', encoding=encoding) as file_obj:
-            for key,group in it.groupby(file_obj, lambda line: line.startswith('----')):
+            for key, group in it.groupby(file_obj, lambda line: line.startswith('----')):
                 if not key:
-                    entry = list(group) # convert group object into lists for futher processing.
-                    print(entry[0:5])
-                    # return group # return a list of chunks
-
-                    # entry = get_list_of_content(filename)
-                    # for item in entry:
-                        # print(entry)
+                    # convert group object into lists for futher processing.
+                    entry = list(group)
+                    # Process each entry in each iteration.
                     date = find_date_for_filename(entry)
+                    prepare_filename()
                     write_chunks(date, 'md', entry)
 
-
-    def get_filename_from_content():
+    def prepare_filename():
+        # Format: date.md, or date-title.md
         pass
-        # Format: date-title.md
 
     def find_date_for_filename(list_of_entry, patterns='date: '):
-        """Give a list containing 'date: ', and return the rest of the line of 'date: '.
+        """Find 'date: ' in elements of a list, and return the content of it'.
 
-        e.g. 'date: 2020-03-20' -> return '2020-03-20'.
+        e.g. element 'date: 2020-03-20' -> returns '2020-03-20'.
+
+        Google: python regex
         """
-        # to substring a string in a list:
-        # Google: python extract a string in a list
-        # content[1] is [date: 2020-03-15 22:22:15\n,] => string[5:15]
-        # 
-        # Google: python regex
         import re
         pattern = '(date:)\s*(\d{4}-\d{2}-\d{2})' # e.g. 'date: 2020-03-20'
         # title = (title:)\s*(\S+\s*)+ e.g. 'title: Dear diary 電子日記  '
 
+        # Return the first match or None.
         for item in list_of_entry:
             match = re.search(pattern, item)
             if match:
                 date = match.group(2)
                 return date
 
+    # Basically, extract data by position is replaced by using regex, because 
+    # sometimes I made spaces as typo such as 'date: ', 'date:', 'date:   ', etc.
+    #
     # def get_date(date_line):
+    #   """to substring a string in a list:
+    #   Google: python extract a string in a list
+    #   content[1] is [date: 2020-03-15 22:22:15\n,] => string[5:15]
+    #   """"
     #     start_idx = date_line.index('date: ')
     #     end_idx = start_idx + 10
     #     return date_line[start_idx:end_idx]
 
     def write_chunks(filename, ext, content, encoding='utf-8'):
-        """Open a file and write the given content.
+        """(Over-)Write content to file.
         """
         filename = f"{filename}.{ext}"
         with open(filename, 'wt', encoding=encoding) as file_obj:
@@ -269,12 +267,7 @@ def test_split_file_into_chunks():
             print(f'Writing {filename}')
 
     # run
-    entry = get_list_of_content(filename)
-    # print(entry)
-    # for item in entry:
-    #     # print(entry)
-    #     date = find_date_for_filename(item)
-    #     write_chunks(date, 'md', item)
+    get_list_of_content(filename)
 
 def main():
     # test_undo()
