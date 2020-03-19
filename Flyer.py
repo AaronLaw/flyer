@@ -137,28 +137,36 @@ class MarkdownToPdf:
     pass
 
 
-# class SplitFileIntoChunks:
-#     """Command that split a text file into chunks by a given delimiter.
-#       For preparing text for Hexo, Pelican.
-#
-#       Given a list of files, a delimiter, and Write chunks in folder 'chunks'.
-#     """
-#     def __init__(self, path, delimiter):
-#         self.path = path
-#         self.delimiter = delimiter
+class SplitFileIntoChunks:
+    """Command that split a text file into chunks by a given delimiter.
+      For preparing text for Hexo, Pelican.
 
-#     def execute(self):
-#         try:
-#             import itertools as it
-#         except ImportError:
-#             raise ImportError('Cannot import itertools')
+      Given a list of files, a delimiter, and write chunks in folder 'chunks'.
+    """
+    def __init__(self, path, delimiter, filename_elements, encoding='utf-8'):
+        self.path = path
+        self.delimiter = delimiter
+        self.filename_elements = filename_elements
+        self.encoding = encoding
 
-#         with open(self.path, mode='r', encoding='utf-8') as f:
-#             for key, group in it.groupby(f,lambda line: line.startswith(self.delimiter)):
-#                 if not key:
-#                     # group = list(group)
-#                     # print(group)
-#                     for line in group:
+    def execute(self):
+        """Open a file, get a list of contents and breaks them into files.
+        """
+        try:
+            import itertools as it
+        except ImportError:
+            raise ImportError('Cannot import itertools')
+
+        with open(self.path, mode='rt', encoding=self.encoding) as file_obj:
+            for key, group in it.groupby(file_obj, lambda line: line.startswith(self.delimiter)):
+                if not key:
+                    # convert group object into lists for futher processing.
+                    entry = list(group)
+                    # Process each entry in each iteration.
+                    # Get new filename in entry by giving patterns.
+                    filename_list = [self.get_content_of_pattern(entry, v) for k,v in self.filename_elements.items()]
+                    filename = self.prepare_filename(filename_list, '-')
+                    self.write_chunks(entry, filename, 'md')
 
 #     def undo(self):
         # """Remove files in folder 'chunks'.
@@ -167,6 +175,66 @@ class MarkdownToPdf:
         # if verbose:
         #     print(f"[renaming '{self.dest}' back to '{self.src}']")
         # os.rename(self.dest, self.src)
+
+    def prepare_filename(self, list, seperator='-'):
+        """Prepare filename by a list of data.
+        
+        Format: date.md, or date-title.md
+        """
+        if len(list) == 0:
+            raise ValueError('Cannot prepare filename.')
+        else:
+            list = self.remove_None_in_list(list)
+            return seperator.join(list).strip()
+    
+    def remove_None_in_list(self, list):
+        """Remove all None element to prevent NoneType error.
+        """
+        for item in list:
+            if None in list:
+                list.remove(None)
+        return list
+
+
+    def get_content_of_pattern(self, entry, pattern='(date:)\s*(\d{4}-\d{2}-\d{2})'):
+        """Find 'date: ' in elements of a list, and return the content of it'.
+
+        e.g. element 'date: 2020-03-20' -> returns '2020-03-20'.
+
+        Google: python regex
+
+        date = '(date:)\s*(\d{4}-\d{2}-\d{2})' # e.g. 'date: 2020-03-20'
+        title = (title:)\s*(\S+\s*)+ e.g. 'title: Dear diary 電子日記  '
+        """
+        import re
+
+        # Return the first match or None.
+        for item in entry:
+            match = re.search(pattern, item)
+            if match:
+                date = match.group(2)
+                return date
+
+    # Basically, extract data by position is replaced by using regex, because 
+    # sometimes I made spaces as typo such as 'date: ', 'date:', 'date:   ', etc.
+    #
+    # def get_date(date_line):
+    #   """to substring a string in a list:
+    #   Google: python extract a string in a list
+    #   content[1] is [date: 2020-03-15 22:22:15\n,] => string[5:15]
+    #   """"
+    #     start_idx = date_line.index('date: ')
+    #     end_idx = start_idx + 10
+    #     return date_line[start_idx:end_idx]
+
+    def write_chunks(self, content, filename, ext, encoding='utf-8'):
+        """(Over-)Write content to file.
+        """
+        filename = f"{filename}.{ext}"
+        with open(filename, mode='wt', encoding=self.encoding) as file_obj:
+            for line in content:
+                file_obj.write(line)
+            print(f'Writing {filename}')
 
 
 def test_undo():
@@ -202,11 +270,8 @@ def test_shift_modification_time():
     c = ShiftModificationTime(new_name, -2*time_delta).execute()
 
 def test_split_file_into_chunks():
-    import itertools as it
 
     in_file = './sample_data/2020-03.md'
-    # pattern = '(date:)\s*(\d{4}-\d{2}-\d{2})' # e.g. 'date: 2020-03-20'
-    # title = '(title:)\s*(\S+\s*)+' e.g. 'title: Dear diary 電子日記  '
     # {'title': pattern}
     filename_elements = {'date':'(date:)\s*(\d{4}-\d{2}-\d{2})', # e.g. 'date: 2020-03-20'
                          'title':'(title:)\s*(\S+\s*)+'}          # e.g. 'title: Dear diary 電子日記'
@@ -215,79 +280,10 @@ def test_split_file_into_chunks():
     #              -> ::find_date
     #              -> ::get_date
     #           -> ::write_chunks -> file out
-    def get_file_and_write_into_chunks(filename, delimiter='----', encoding='utf-8'):
-        """Open a file, get a list of contents and breaks them into files.
-        """
-        with open(filename, 'rt', encoding=encoding) as file_obj:
-            for key, group in it.groupby(file_obj, lambda line: line.startswith(delimiter)):
-                if not key:
-                    # convert group object into lists for futher processing.
-                    entry = list(group)
-                    # Process each entry in each iteration.
-                    # Get new filename in entry by giving patterns.
-                    filename_list = [get_content_of_pattern(entry, v) for k,v in filename_elements.items()]
-                    filename = prepare_filename(filename_list)
-                    write_chunks(entry, filename, 'md')
-
-    def prepare_filename(list, seperator='-'):
-        """Prepare filename by a list of data.
-        
-        Format: date.md, or date-title.md
-        """
-        if len(list) == 0:
-            raise ValueError('Cannot prepare filename.')
-        else:
-            list = remove_None_in_list(list)
-            return seperator.join(list).strip()
-    
-    def remove_None_in_list(list):
-        for item in list:
-            if None in list:
-                list.remove(None)
-        return list
-
-
-    def get_content_of_pattern(entry, pattern='(date:)\s*(\d{4}-\d{2}-\d{2})'):
-        """Find 'date: ' in elements of a list, and return the content of it'.
-
-        e.g. element 'date: 2020-03-20' -> returns '2020-03-20'.
-
-        Google: python regex
-        """
-        import re
-        # pattern = '(date:)\s*(\d{4}-\d{2}-\d{2})' # e.g. 'date: 2020-03-20'
-        # title = (title:)\s*(\S+\s*)+ e.g. 'title: Dear diary 電子日記  '
-
-        # Return the first match or None.
-        for item in entry:
-            match = re.search(pattern, item)
-            if match:
-                date = match.group(2)
-                return date
-
-    # Basically, extract data by position is replaced by using regex, because 
-    # sometimes I made spaces as typo such as 'date: ', 'date:', 'date:   ', etc.
-    #
-    # def get_date(date_line):
-    #   """to substring a string in a list:
-    #   Google: python extract a string in a list
-    #   content[1] is [date: 2020-03-15 22:22:15\n,] => string[5:15]
-    #   """"
-    #     start_idx = date_line.index('date: ')
-    #     end_idx = start_idx + 10
-    #     return date_line[start_idx:end_idx]
-
-    def write_chunks(content, filename, ext, encoding='utf-8'):
-        """(Over-)Write content to file.
-        """
-        filename = f"{filename}.{ext}"
-        with open(filename, 'wt', encoding=encoding) as file_obj:
-            for line in content:
-                file_obj.write(line)
-            print(f'Writing {filename}')
 
     # run
-    get_file_and_write_into_chunks(in_file)
+    chunks = SplitFileIntoChunks(in_file, '----', filename_elements)
+    chunks.execute()
 
 def main():
     # test_undo()
