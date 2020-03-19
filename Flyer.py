@@ -210,24 +210,27 @@ def test_split_file_into_chunks():
     #              -> ::find_date
     #              -> ::get_date
     #           -> ::write_chunks -> file out
-    def get_list_of_content(filename, encoding='utf-8'):
-        """Open a file and return a list of contents.
+    def get_file_and_write_into_chunks(filename, encoding='utf-8'):
+        """Open a file, get a list of contents and breaks them into files.
         """
-        with open(filename,'rt', encoding=encoding) as file_obj:
+        with open(filename, 'rt', encoding=encoding) as file_obj:
             for key, group in it.groupby(file_obj, lambda line: line.startswith('----')):
                 if not key:
                     # convert group object into lists for futher processing.
                     entry = list(group)
                     # Process each entry in each iteration.
-                    date = find_date_for_filename(entry)
-                    prepare_filename()
-                    write_chunks(date, 'md', entry)
+                    date = get_content_of_pattern(entry)
+                    filename = prepare_filename([date])
+                    write_chunks(entry, filename, 'md')
 
-    def prepare_filename():
-        # Format: date.md, or date-title.md
+    def prepare_filename(list, seperator='-'):
+        """Prepare filename by a list of data.
+        
+        Format: date.md, or date-title.md
+        """
         pass
 
-    def find_date_for_filename(list_of_entry, patterns='date: '):
+    def get_content_of_pattern(list_of_entry, patterns='date: '):
         """Find 'date: ' in elements of a list, and return the content of it'.
 
         e.g. element 'date: 2020-03-20' -> returns '2020-03-20'.
@@ -257,7 +260,7 @@ def test_split_file_into_chunks():
     #     end_idx = start_idx + 10
     #     return date_line[start_idx:end_idx]
 
-    def write_chunks(filename, ext, content, encoding='utf-8'):
+    def write_chunks(content, filename, ext, encoding='utf-8'):
         """(Over-)Write content to file.
         """
         filename = f"{filename}.{ext}"
@@ -267,12 +270,12 @@ def test_split_file_into_chunks():
             print(f'Writing {filename}')
 
     # run
-    get_list_of_content(filename)
+    get_file_and_write_into_chunks(filename)
 
 def main():
     # test_undo()
     # test_shift_modification_time()
-    test_spilt_file_into_chunks()
+    test_split_file_into_chunks()
 
 if __name__ == "__main__":
     main()
