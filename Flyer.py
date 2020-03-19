@@ -204,7 +204,12 @@ def test_shift_modification_time():
 def test_split_file_into_chunks():
     import itertools as it
 
-    filename = './sample_data/2020-03.md'
+    in_file = './sample_data/2020-03.md'
+    # pattern = '(date:)\s*(\d{4}-\d{2}-\d{2})' # e.g. 'date: 2020-03-20'
+    # title = '(title:)\s*(\S+\s*)+' e.g. 'title: Dear diary 電子日記  '
+    # {'title': pattern}
+    filename_elements = {'date':'(date:)\s*(\d{4}-\d{2}-\d{2})', # e.g. 'date: 2020-03-20'
+                         'title':'(title:)\s*(\S+\s*)+'}          # e.g. 'title: Dear diary 電子日記'
     # file in -> SplitFileIntoChunks::get_list_of_content
     #           -> ::detemint_filename
     #              -> ::find_date
@@ -219,8 +224,12 @@ def test_split_file_into_chunks():
                     # convert group object into lists for futher processing.
                     entry = list(group)
                     # Process each entry in each iteration.
-                    date = get_content_of_pattern(entry)
-                    filename = prepare_filename([date])
+                    ## date = get_content_of_pattern(entry)
+                    ## filename = prepare_filename([date])
+
+                    # Get new filename in entry by giving patterns.
+                    filename_list = [get_content_of_pattern(entry, v) for k,v in filename_elements.items()]
+                    filename = prepare_filename(filename_list)
                     write_chunks(entry, filename, 'md')
 
     def prepare_filename(list, seperator='-'):
@@ -231,9 +240,9 @@ def test_split_file_into_chunks():
         if len(list) == 0:
             raise ValueError('Cannot prepare filename.')
         else:
-            return seperator.join(list)
+            return seperator.join(list).strip()
 
-    def get_content_of_pattern(list_of_entry, patterns='date: '):
+    def get_content_of_pattern(entry, pattern='(date:)\s*(\d{4}-\d{2}-\d{2})'):
         """Find 'date: ' in elements of a list, and return the content of it'.
 
         e.g. element 'date: 2020-03-20' -> returns '2020-03-20'.
@@ -241,11 +250,11 @@ def test_split_file_into_chunks():
         Google: python regex
         """
         import re
-        pattern = '(date:)\s*(\d{4}-\d{2}-\d{2})' # e.g. 'date: 2020-03-20'
+        # pattern = '(date:)\s*(\d{4}-\d{2}-\d{2})' # e.g. 'date: 2020-03-20'
         # title = (title:)\s*(\S+\s*)+ e.g. 'title: Dear diary 電子日記  '
 
         # Return the first match or None.
-        for item in list_of_entry:
+        for item in entry:
             match = re.search(pattern, item)
             if match:
                 date = match.group(2)
@@ -273,7 +282,7 @@ def test_split_file_into_chunks():
             print(f'Writing {filename}')
 
     # run
-    get_file_and_write_into_chunks(filename)
+    get_file_and_write_into_chunks(in_file)
 
 def main():
     # test_undo()
