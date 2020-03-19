@@ -215,11 +215,11 @@ def test_split_file_into_chunks():
     #              -> ::find_date
     #              -> ::get_date
     #           -> ::write_chunks -> file out
-    def get_file_and_write_into_chunks(filename, encoding='utf-8'):
+    def get_file_and_write_into_chunks(filename, delimiter='----', encoding='utf-8'):
         """Open a file, get a list of contents and breaks them into files.
         """
         with open(filename, 'rt', encoding=encoding) as file_obj:
-            for key, group in it.groupby(file_obj, lambda line: line.startswith('----')):
+            for key, group in it.groupby(file_obj, lambda line: line.startswith(delimiter)):
                 if not key:
                     # convert group object into lists for futher processing.
                     entry = list(group)
