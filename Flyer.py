@@ -241,9 +241,9 @@ def test_split_file_into_chunks():
             return seperator.join(list).strip()
     
     def remove_None_in_list(list):
-        if None in list:
-            index = list.index(None)
-            list.pop(index)
+        for item in list:
+            if None in list:
+                list.remove(None)
         return list
 
 
