@@ -224,9 +224,6 @@ def test_split_file_into_chunks():
                     # convert group object into lists for futher processing.
                     entry = list(group)
                     # Process each entry in each iteration.
-                    ## date = get_content_of_pattern(entry)
-                    ## filename = prepare_filename([date])
-
                     # Get new filename in entry by giving patterns.
                     filename_list = [get_content_of_pattern(entry, v) for k,v in filename_elements.items()]
                     filename = prepare_filename(filename_list)
@@ -240,7 +237,15 @@ def test_split_file_into_chunks():
         if len(list) == 0:
             raise ValueError('Cannot prepare filename.')
         else:
+            list = remove_None_in_list(list)
             return seperator.join(list).strip()
+    
+    def remove_None_in_list(list):
+        if None in list:
+            index = list.index(None)
+            list.pop(index)
+        return list
+
 
     def get_content_of_pattern(entry, pattern='(date:)\s*(\d{4}-\d{2}-\d{2})'):
         """Find 'date: ' in elements of a list, and return the content of it'.
