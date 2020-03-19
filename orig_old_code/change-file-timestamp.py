@@ -12,7 +12,7 @@
 # Author: AaronLaw
 # Last Update: 2017-04-13
 import os, time, datetime
-from stat import 
+import stat as st
 
 folders = []
 files = []
