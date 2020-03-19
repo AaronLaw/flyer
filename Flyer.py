@@ -228,7 +228,10 @@ def test_split_file_into_chunks():
         
         Format: date.md, or date-title.md
         """
-        pass
+        if len(list) == 0:
+            raise ValueError('Cannot prepare filename.')
+        else:
+            return seperator.join(list)
 
     def get_content_of_pattern(list_of_entry, patterns='date: '):
         """Find 'date: ' in elements of a list, and return the content of it'.
