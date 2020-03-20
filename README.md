@@ -6,11 +6,14 @@ It should follow PEP8 coding style and coded in OOP-style.
 
 #### Reference:
 
+* Read source code of [requests for human](https://github.com/psf/requests) for reference.
 * https://awesome-python.com
 * Google: python text manipulation library
 * Google: python regex -> glob
 * Google: regular expression visualizer -> Google: python regex -> [Python RegEx](https://www.programiz.com/python-programming/regex)
 * https://github.com/yidao620c/design-pattern/tree/master/pattern12-command
+* [Breaking out of two loops](https://nedbatchelder.com/blog/201608/breaking_out_of_two_loops.html) -> [Loop Like A Native - Ned Patchelder](https://nedbatchelder.com/text/iter.html)
+
 
 ----
 
@@ -69,6 +72,22 @@ with open(filename,'r') as f:
 
 The debugger in VS Code rocks! I can't make this the prototype (a.k.a commit d729a18) works without it. I cannot know the correct structure of `it.groupby()` without using the debugger.
 No more `print()` but breakpoints.
+
+2020-03-20:
+
+Use of pathlib:
+
+
+1. [你应该使用pathlib替代os.path](https://zhuanlan.zhihu.com/p/87940289)
+    * [PEP 428 -- The pathlib module -- object-oriented filesystem paths](https://www.python.org/dev/peps/pep-0428/)
+    * [Python Documentation - pathlib - Object-oriented filesystem paths](https://docs.python.org/3/library/pathlib.html)
+    * [Trey Hunner - Why you should be using pathlib](https://treyhunner.com/2018/12/why-you-should-be-using-pathlib/)
+2. [Python 工匠：高效操作文件的三个建议](https://github.com/piglei/one-python-craftsman/blob/master/zh_CN/11-three-tips-on-writing-file-related-codes.md)
+3. Google: python pathlib -> [Python 3's pathlib Module: Taming the File System](https://realpython.com/python-pathlib/)
+    3.1 -> [Pathlib Cheatsheet](https://github.com/chris1610/pbpython/blob/master/extras/Pathlib-Cheatsheet.pdf)
+4. Google: python pathlib listdir -> https://stackoverflow.com/questions/39909655/listing-of-all-files-in-directory
+    4.1 Google: python pathlib listdir -> python pathlib list subdirectories -> https://stackoverflow.com/questions/973473/getting-a-list-of-all-subdirectories-in-the-current-directory
+
 
 TODO:
 1. `SplitFileIntoChunks`
