@@ -164,10 +164,12 @@ class SplitFileIntoChunks:
         """
         try:
             import itertools as it
+            import fileinput
         except ImportError as err:
             print(f'Cannot import itertools: {err}')
 
-        with open(self.path, mode='rt', encoding=self.encoding) as file_obj:
+        # with open(self.path, mode='rt', encoding=self.encoding) as file_obj:
+        with fileinput.input(files=self.path, mode='r') as file_obj:
             for key, group in it.groupby(file_obj, lambda line: line.startswith(self.delimiter)):
                 if not key:
                     # convert group object into lists for futher processing.
@@ -271,7 +273,7 @@ class ListDirectory:
         if not self.recusive:
             for fpath in Path(self.path).glob(self.pattern):
                 yield fpath 
-        if self.recusive:
+        else:
             for fpath in Path(self.path).rglob(self.pattern):
                 yield fpath 
             
@@ -322,20 +324,23 @@ def test_list_directory():
     [print(item) for item in recusive_dir.execute()]
         
 def test_split_file_into_chunks():
-    in_file = Path('./sample_data/2020-03.md')
+    path, file_pattern = Path('/mnt/d/Syncthing/Sites/Python/flyer/sample_data'), '*.md'
     delimiter = '----'
     # {'title': pattern}
-    patterns_for_filename = {'date':'(date:)\s*(\d{4}-\d{2}-\d{2})', # e.g. 'date: 2020-03-20'
+    patterns_for_chunks_filename = {'date':'(date:)\s*(\d{4}-\d{2}-\d{2})', # e.g. 'date: 2020-03-20'
                          'title':'(title:)\s*(\S+\s*)+'}          # e.g. 'title: Dear diary 電子日記'
 
-    chunks = SplitFileIntoChunks(in_file, delimiter, patterns_for_filename)
+    # files = Path('./sample_data/2020-03.md')
+    files_generator = ListDirectory(path, pattern=file_pattern, recusive=True).execute()
+    filelist = [file for file in files_generator]
+    chunks = SplitFileIntoChunks(filelist, delimiter, patterns_for_chunks_filename)
     chunks.execute()
 
 def main():
     # test_undo()
     # test_shift_modification_time()
-    # test_split_file_into_chunks()
-    test_list_directory()
+    test_split_file_into_chunks()
+    # test_list_directory()
 
 if __name__ == "__main__":
     main()
