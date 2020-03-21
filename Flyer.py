@@ -262,8 +262,12 @@ class ListDirectory:
     def execute(self):
         if verbose:
             print(f"[listing '{self.path}']")
-        for fpath in Path(self.path).glob(self.pattern):
-            yield fpath 
+        if not self.recusive:
+            for fpath in Path(self.path).glob(self.pattern):
+                yield fpath 
+        if self.recusive:
+            for fpath in Path(self.path).rglob(self.pattern):
+                yield fpath 
             
     def undo(self):
         """Nothing to undo in listing a directory.
@@ -309,6 +313,7 @@ def test_list_directory():
     recusive_dir = ListDirectory(path, recusive=True)
 
     [print(item) for item in dir.execute()]
+    [print(item) for item in recusive_dir.execute()]
         
 def test_split_file_into_chunks():
     in_file = './sample_data/2020-03.md'
