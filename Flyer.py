@@ -4,7 +4,7 @@
 #                  log requests, and supports undoable operations.
 # Reference: Mastering Python Design Patterns, Chapter 11.
 
-# TODO: Read source code of requests for human for reference.
+# TODO: Read source code of [requests for human](https://github.com/psf/requests) for reference.
 import os
 import sys
 
@@ -141,7 +141,12 @@ class SplitFileIntoChunks:
     """Command that split a text file into chunks by a given delimiter.
       For preparing text for Hexo, Pelican.
 
-      Given a list of files, a delimiter, and write chunks in folder 'chunks'.
+    Given a list of files, a delimiter, and write chunks in folder 'chunks'.
+    #   file in -> SplitFileIntoChunks::get_list_of_content
+    #               -> REPEAT ::detemint_filename
+    #                  -> ::find_date
+    #                  -> ::get_date
+    #            -> ::write_chunks -> file out
     """
     def __init__(self, path, delimiter, filename_elements, encoding='utf-8'):
         self.path = path
@@ -164,19 +169,20 @@ class SplitFileIntoChunks:
                     entry = list(group)
                     # Process each entry in each iteration.
                     # Get new filename in entry by giving patterns.
-                    filename_list = [self.get_content_of_pattern(entry, v) for k,v in self.filename_elements.items()]
-                    filename = self.prepare_filename(filename_list, '-')
-                    self.write_chunks(entry, filename, 'md')
+                    filename_list = [self._get_content_of_pattern(entry, v) for k,v in self.filename_elements.items()]
+                    filename = self._prepare_filename(filename_list, '-')
+                    self._write_chunks(entry, filename, 'md')
 
-#     def undo(self):
-        # """Remove files in folder 'chunks'.
-        # """
-#         pass
+    def undo(self):
+        """Remove files in folder 'chunks'.
+        """
+        # TODO: implementation
+        pass
         # if verbose:
         #     print(f"[renaming '{self.dest}' back to '{self.src}']")
         # os.rename(self.dest, self.src)
 
-    def prepare_filename(self, list, seperator='-'):
+    def _prepare_filename(self, list, seperator='-'):
         """Prepare filename by a list of data.
         
         Format: date.md, or date-title.md
@@ -184,10 +190,10 @@ class SplitFileIntoChunks:
         if len(list) == 0:
             raise ValueError('Cannot prepare filename.')
         else:
-            list = self.remove_None_in_list(list)
+            list = self._remove_None_in_list(list)
             return seperator.join(list).strip()
     
-    def remove_None_in_list(self, list):
+    def _remove_None_in_list(self, list):
         """Remove all None element to prevent NoneType error.
         """
         for item in list:
@@ -196,7 +202,7 @@ class SplitFileIntoChunks:
         return list
 
 
-    def get_content_of_pattern(self, entry, pattern='(date:)\s*(\d{4}-\d{2}-\d{2})'):
+    def _get_content_of_pattern(self, entry, pattern='(date:)\s*(\d{4}-\d{2}-\d{2})'):
         """Find 'date: ' in elements of a list, and return the content of it'.
 
         e.g. element 'date: 2020-03-20' -> returns '2020-03-20'.
@@ -227,7 +233,7 @@ class SplitFileIntoChunks:
     #     end_idx = start_idx + 10
     #     return date_line[start_idx:end_idx]
 
-    def write_chunks(self, content, filename, ext, encoding='utf-8'):
+    def _write_chunks(self, content, filename, ext, encoding='utf-8'):
         """(Over-)Write content to file.
         """
         filename = f"{filename}.{ext}"
@@ -270,19 +276,13 @@ def test_shift_modification_time():
     c = ShiftModificationTime(new_name, -2*time_delta).execute()
 
 def test_split_file_into_chunks():
-
     in_file = './sample_data/2020-03.md'
+    delimiter = '----'
     # {'title': pattern}
-    filename_elements = {'date':'(date:)\s*(\d{4}-\d{2}-\d{2})', # e.g. 'date: 2020-03-20'
+    patterns_for_filename = {'date':'(date:)\s*(\d{4}-\d{2}-\d{2})', # e.g. 'date: 2020-03-20'
                          'title':'(title:)\s*(\S+\s*)+'}          # e.g. 'title: Dear diary 電子日記'
-    # file in -> SplitFileIntoChunks::get_list_of_content
-    #           -> ::detemint_filename
-    #              -> ::find_date
-    #              -> ::get_date
-    #           -> ::write_chunks -> file out
 
-    # run
-    chunks = SplitFileIntoChunks(in_file, '----', filename_elements)
+    chunks = SplitFileIntoChunks(in_file, delimiter, patterns_for_filename)
     chunks.execute()
 
 def main():
