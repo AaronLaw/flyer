@@ -16,6 +16,7 @@ def unify_ext_with_os_path(path):
 # Reference: https://github.com/piglei/one-python-craftsman/blob/master/zh_CN/11-three-tips-on-writing-file-related-codes.md
 from pathlib import Path
 
+TODO: try to use genetator instead of `return`
 def unify_ext_with_pathlib(path):
     for fpath in Path(path).glob('*.txt'):
         # fpath.rename(fpath.with_suffix('.csv'))
@@ -62,5 +63,6 @@ def tree(directory):
 
 path = '/mnt/d/Syncthing/Documents/sync doc/Diary'
 # list_path(path)
+unify_ext_with_pathlib(path)
 # print(list_dir2(path))
-tree(path)
+# tree(path)

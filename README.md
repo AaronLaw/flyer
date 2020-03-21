@@ -6,6 +6,7 @@ It should follow PEP8 coding style and coded in OOP-style.
 
 #### Reference:
 
+* Introducing Python, 2nd Edition
 * Read source code of [requests for human](https://github.com/psf/requests) for reference.
 * https://awesome-python.com
 * Google: python text manipulation library
@@ -73,20 +74,6 @@ with open(filename,'r') as f:
 The debugger in VS Code rocks! I can't make this the prototype (a.k.a commit d729a18) works without it. I cannot know the correct structure of `it.groupby()` without using the debugger.
 No more `print()` but breakpoints.
 
-2020-03-20:
-
-Use of pathlib:
-
-
-1. [你应该使用pathlib替代os.path](https://zhuanlan.zhihu.com/p/87940289)
-    * [PEP 428 -- The pathlib module -- object-oriented filesystem paths](https://www.python.org/dev/peps/pep-0428/)
-    * [Python Documentation - pathlib - Object-oriented filesystem paths](https://docs.python.org/3/library/pathlib.html)
-    * [Trey Hunner - Why you should be using pathlib](https://treyhunner.com/2018/12/why-you-should-be-using-pathlib/)
-2. [Python 工匠：高效操作文件的三个建议](https://github.com/piglei/one-python-craftsman/blob/master/zh_CN/11-three-tips-on-writing-file-related-codes.md)
-3. Google: python pathlib -> [Python 3's pathlib Module: Taming the File System](https://realpython.com/python-pathlib/)
-    3.1 -> [Pathlib Cheatsheet](https://github.com/chris1610/pbpython/blob/master/extras/Pathlib-Cheatsheet.pdf)
-4. Google: python pathlib listdir -> https://stackoverflow.com/questions/39909655/listing-of-all-files-in-directory
-    4.1 Google: python pathlib listdir -> python pathlib list subdirectories -> https://stackoverflow.com/questions/973473/getting-a-list-of-all-subdirectories-in-the-current-directory
 
 
 TODO:
@@ -100,12 +87,43 @@ TODO:
     - [x] Use debugger `RUN` in VS Code instead of `print()` blah blah blah.
     - [ ] Trim empty lines `\n` in the beginning and in the end of the output.
     - [] Set source and target of files.
- 
+
+#### ListDirectory
+
+2020-03-20:
+
+Use of pathlib:
+
+1. [你应该使用pathlib替代os.path](https://zhuanlan.zhihu.com/p/87940289)
+    * [PEP 428 -- The pathlib module -- object-oriented filesystem paths](https://www.python.org/dev/peps/pep-0428/)
+    * [Python Documentation - pathlib - Object-oriented filesystem paths](https://docs.python.org/3/library/pathlib.html)
+    * [Trey Hunner - Why you should be using pathlib](https://treyhunner.com/2018/12/why-you-should-be-using-pathlib/)
+2. [Python 工匠：高效操作文件的三个建议](https://github.com/piglei/one-python-craftsman/blob/master/zh_CN/11-three-tips-on-writing-file-related-codes.md)
+3. Google: python pathlib -> [Python 3's pathlib Module: Taming the File System](https://realpython.com/python-pathlib/)
+    3.1 -> [Pathlib Cheatsheet](https://github.com/chris1610/pbpython/blob/master/extras/Pathlib-Cheatsheet.pdf)
+4. Google: python pathlib listdir -> https://stackoverflow.com/questions/39909655/listing-of-all-files-in-directory
+    4.1 Google: python pathlib listdir -> python pathlib list subdirectories -> https://stackoverflow.com/questions/973473/getting-a-list-of-all-subdirectories-in-the-current-directory
+5. python pathlib list subdirectories -> https://pbpython.com/pathlib-intro.html
+
+2020-03-21:
+
+Use of generator to generat a list of file in a directory:
+
+1. Use generator to create iterator because a generator expression is much more memory efficient
+    1.1 Google: python generator -> https://www.programiz.com/python-programming/generator
+    > If a function contains at least one yield statement (it may contain other yield or return statements), it becomes a generator function. Both yield and return will return some value from a function.
+    > The difference is that, while a return statement terminates a function entirely, yield statement pauses the function saving all its states and later continues from there on successive calls.
+    1.2 Google: python generator -> https://wiki.python.org/moin/Generators
+
 ----
 
 General TODO:
 - [ ] Read and study source code of requests for human as a coding reference. 
 
 1. Google: python word freq
-2. Google: python word freq in text file
+2. Google: python word freq in text 
+
+#### Possible new classes
+
+FindFile, SplitFilename, MarkdownToPdf, ListDirectory, Tree
  

@@ -8,6 +8,11 @@
 import os
 import sys
 
+try:
+    from pathlib import Path
+except ImportError:
+    print(f'Cannot import pathlib. Please use Python3.6+.')
+
 verbose = True
 
 class RenameFile:
@@ -243,6 +248,28 @@ class SplitFileIntoChunks:
             print(f'Writing {filename}')
 
 
+class ListDirectory:
+    """Command that list a directory.
+
+    pattern:
+    '*.txt' for all .txt file
+    '*' for all files
+    '**/*' for all files recusively
+    """
+    def __init__(self, path, pattern='*', recusive=False):
+        self.path, self.pattern, self.recusive = path, pattern, recusive
+        
+    def execute(self):
+        if verbose:
+            print(f"[listing '{self.path}']")
+        for fpath in Path(self.path).glob(self.pattern):
+            yield fpath
+        
+    def undo(self):
+        """Nothing to undo in listing a directory.
+        """
+        pass
+
 def test_undo():
     orig_name, new_name = 'file1', 'file2'
     
@@ -275,6 +302,16 @@ def test_shift_modification_time():
     [c.execute() for c in commands]
     c = ShiftModificationTime(new_name, -2*time_delta).execute()
 
+def test_list_directory():
+    path = '/mnt/d/Syncthing/Documents/sync doc/Diary'
+
+    dir = ListDirectory(path, recusive=False)
+    recusive_dir = ListDirectory(path, recusive=True)
+
+    alist = dir.execute()
+    for item in alist: 
+        print(item)
+
 def test_split_file_into_chunks():
     in_file = './sample_data/2020-03.md'
     delimiter = '----'
@@ -288,7 +325,8 @@ def test_split_file_into_chunks():
 def main():
     # test_undo()
     # test_shift_modification_time()
-    test_split_file_into_chunks()
+    # test_split_file_into_chunks()
+    test_list_directory()
 
 if __name__ == "__main__":
     main()
