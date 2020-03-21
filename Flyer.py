@@ -164,8 +164,8 @@ class SplitFileIntoChunks:
         """
         try:
             import itertools as it
-        except ImportError:
-            raise ImportError('Cannot import itertools')
+        except ImportError as err:
+            print(f'Cannot import itertools: {err}')
 
         with open(self.path, mode='rt', encoding=self.encoding) as file_obj:
             for key, group in it.groupby(file_obj, lambda line: line.startswith(self.delimiter)):
@@ -173,10 +173,15 @@ class SplitFileIntoChunks:
                     # convert group object into lists for futher processing.
                     entry = list(group)
                     # Process each entry in each iteration.
-                    # Get new filename in entry by giving patterns.
-                    filename_list = [self._get_content_of_pattern(entry, v) for k,v in self.filename_elements.items()]
-                    filename = self._prepare_filename(filename_list, '-')
-                    self._write_chunks(entry, filename, 'md')
+                    self._make_chunks_from_an_entry(entry)
+
+    def _make_chunks_from_an_entry(self, entry):
+        # Get new filename in entry by giving patterns.
+        new_filenames = [self._pattern_to_content(entry, v)
+                        for k,v in self.filename_elements.items()
+                        ]
+        filename = self._prepare_filename(new_filenames, '-')
+        self._write_chunks(entry, filename, 'md')
 
     def undo(self):
         """Remove files in folder 'chunks'.
@@ -207,15 +212,16 @@ class SplitFileIntoChunks:
         return list
 
 
-    def _get_content_of_pattern(self, entry, pattern='(date:)\s*(\d{4}-\d{2}-\d{2})'):
+    def _pattern_to_content(self, entry, pattern='(date:)\s*(\d{4}-\d{2}-\d{2})'):
         """Find 'date: ' in elements of a list, and return the content of it'.
 
         e.g. element 'date: 2020-03-20' -> returns '2020-03-20'.
 
         Google: python regex
 
-        date = '(date:)\s*(\d{4}-\d{2}-\d{2})' # e.g. 'date: 2020-03-20'
-        title = (title:)\s*(\S+\s*)+ e.g. 'title: Dear diary 電子日記  '
+        Regex as the pattern:
+            date = '(date:)\s*(\d{4}-\d{2}-\d{2})' # e.g. 'date: 2020-03-20'
+            title = (title:)\s*(\S+\s*)+ e.g. 'title: Dear diary 電子日記  '
         """
         import re
 
@@ -252,9 +258,9 @@ class ListDirectory:
     """Command that list a directory.
 
     pattern:
-    '*.txt' for all .txt file
-    '*' for all files
-    '**/*' for all files recusively
+        '*.txt' for all .txt file
+        '*' for all files
+        '**/*' for all files recusively
     """
     def __init__(self, path, pattern='*', recusive=False):
         self.path, self.pattern, self.recusive = path, pattern, recusive
@@ -316,7 +322,7 @@ def test_list_directory():
     [print(item) for item in recusive_dir.execute()]
         
 def test_split_file_into_chunks():
-    in_file = './sample_data/2020-03.md'
+    in_file = Path('./sample_data/2020-03.md')
     delimiter = '----'
     # {'title': pattern}
     patterns_for_filename = {'date':'(date:)\s*(\d{4}-\d{2}-\d{2})', # e.g. 'date: 2020-03-20'

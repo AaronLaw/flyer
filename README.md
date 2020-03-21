@@ -8,6 +8,8 @@ It should follow PEP8 coding style and coded in OOP-style.
 
 * Introducing Python, 2nd Edition
 * Read source code of [requests for human](https://github.com/psf/requests) for reference.
+* Youtube: python command pattern
+* https://www.attrs.org/en/stable/
 * https://awesome-python.com
 * Google: python text manipulation library
 * Google: python regex -> glob
@@ -104,6 +106,8 @@ Use of pathlib:
 4. Google: python pathlib listdir -> https://stackoverflow.com/questions/39909655/listing-of-all-files-in-directory
     4.1 Google: python pathlib listdir -> python pathlib list subdirectories -> https://stackoverflow.com/questions/973473/getting-a-list-of-all-subdirectories-in-the-current-directory
 5. python pathlib list subdirectories -> https://pbpython.com/pathlib-intro.html
+6. Youtube: python pathlib -> [Python Pathlib Tutorial - JCharisTech & J-Secur1ty - YouTube](https://www.youtube.com/watch?v=HejUKf88Ua0) -> https://blog.jcharistech.com/2020/03/11/python-pathlib-tutorial/
+
 
 2020-03-21:
 
