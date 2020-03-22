@@ -153,10 +153,13 @@ class SplitFileIntoChunks:
     #                  -> ::get_date
     #            -> ::write_chunks -> file out
     """
-    def __init__(self, path, delimiter, filename_elements, encoding='utf-8'):
-        self.path = path
+    def __init__(self, in_path, out_path, delimiter, filename_elements, 
+                    new_filename_sep='-', encoding='utf-8'):
+        self.in_path = in_path
+        self.out_path = out_path
         self.delimiter = delimiter
         self.filename_elements = filename_elements
+        self.new_filename_separator = new_filename_sep
         self.encoding = encoding
 
     def execute(self):
@@ -169,7 +172,7 @@ class SplitFileIntoChunks:
             print(f'Cannot import itertools: {err}')
 
         # with open(self.path, mode='rt', encoding=self.encoding) as file_obj:
-        with fileinput.input(files=self.path, mode='r') as file_obj:
+        with fileinput.input(files=self.in_path, mode='r') as file_obj:
             for key, group in it.groupby(file_obj, lambda line: line.startswith(self.delimiter)):
                 if not key:
                     # convert group object into lists for futher processing.
@@ -182,7 +185,7 @@ class SplitFileIntoChunks:
         new_filenames = [self._pattern_to_content(entry, v)
                         for k,v in self.filename_elements.items()
                         ]
-        filename = self._prepare_filename(new_filenames, '-')
+        filename = self._prepare_filename(new_filenames)
         self._write_chunks(entry, filename, 'md')
 
     def undo(self):
@@ -194,7 +197,7 @@ class SplitFileIntoChunks:
         #     print(f"[renaming '{self.dest}' back to '{self.src}']")
         # os.rename(self.dest, self.src)
 
-    def _prepare_filename(self, list, seperator='-'):
+    def _prepare_filename(self, list):
         """Prepare filename by a list of data.
         
         Format: date.md, or date-title.md
@@ -203,11 +206,12 @@ class SplitFileIntoChunks:
         try:
             if self.is_empty_list(list):
                 raise TypeError
-            filename = seperator.join(list).strip()
+            filename = self.new_filename_separator.join(list).strip()
             return filename
         except TypeError as err:
             print(f'Cannot prepare new filename from {self.path}: {err}, using a default filename: "untitled"')
-            return 'untilted'
+            filename = 'untilted'
+            return filename
 
     def _remove_None_in_list(self, namelist):
         """Remove all None element to prevent NoneType error.
@@ -250,7 +254,7 @@ class SplitFileIntoChunks:
     #     end_idx = start_idx + 10
     #     return date_line[start_idx:end_idx]
 
-    def _write_chunks(self, content, filename, ext, encoding='utf-8'):
+    def _write_chunks(self, content, filename, ext):
         """(Over-)Write content to file.
         """
         filename = f"{filename}.{ext}"
@@ -328,16 +332,17 @@ def test_list_directory():
     [print(item) for item in recusive_dir.execute()]
         
 def test_split_file_into_chunks():
-    path, file_pattern = Path('/mnt/d/Syncthing/Sites/Python/flyer/sample_data'), '*.md'
+    in_path, file_pattern = Path('/mnt/d/Syncthing/Sites/Python/flyer/sample_data'), '*.md'
+    out_path = Path('/mnt/z/output/')
     delimiter = '----'
     # {'title': pattern}
     patterns_for_chunks_filename = {'date':'(date:)\s*(\d{4}-\d{2}-\d{2})', # e.g. 'date: 2020-03-20'
                          'title':'(title:)\s*(\S+\s*)+'}          # e.g. 'title: Dear diary 電子日記'
 
     # files = Path('./sample_data/2020-03.md')
-    files_generator = ListDirectory(path, pattern=file_pattern, recusive=True).execute()
+    files_generator = ListDirectory(in_path, pattern=file_pattern, recusive=True).execute()
     filelist = [file for file in files_generator]
-    chunks = SplitFileIntoChunks(filelist, delimiter, patterns_for_chunks_filename)
+    chunks = SplitFileIntoChunks(filelist, out_path ,delimiter, patterns_for_chunks_filename, '-')
     chunks.execute()
 
 def main():
