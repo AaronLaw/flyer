@@ -199,19 +199,20 @@ class SplitFileIntoChunks:
         
         Format: date.md, or date-title.md
         """
-        if len(list) == 0:
-            raise ValueError('Cannot prepare filename.')
-        else:
-            list = self._remove_None_in_list(list)
-            return seperator.join(list).strip()
+        list = self._remove_None_in_list(list)
+        try:
+            if len(list) == 0: # an empty list
+                raise TypeError
+            filename = seperator.join(list).strip()
+            return filename
+        except TypeError as err:
+            print(f'Cannot prepare new filename from {self.path}: {err}, using a default filename: "untitled"')
     
-    def _remove_None_in_list(self, list):
+    def _remove_None_in_list(self, namelist):
         """Remove all None element to prevent NoneType error.
         """
-        for item in list:
-            if None in list:
-                list.remove(None)
-        return list
+        # [i for i in list if i]
+        return list(filter(None, namelist))
 
 
     def _pattern_to_content(self, entry, pattern='(date:)\s*(\d{4}-\d{2}-\d{2})'):
