@@ -207,7 +207,8 @@ class SplitFileIntoChunks:
             return filename
         except TypeError as err:
             print(f'Cannot prepare new filename from {self.path}: {err}, using a default filename: "untitled"')
-    
+            return 'untilted'
+
     def _remove_None_in_list(self, namelist):
         """Remove all None element to prevent NoneType error.
         """
