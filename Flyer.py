@@ -201,7 +201,7 @@ class SplitFileIntoChunks:
         """
         list = self._remove_None_in_list(list)
         try:
-            if len(list) == 0: # an empty list
+            if self.is_empty_list(list):
                 raise TypeError
             filename = seperator.join(list).strip()
             return filename
@@ -214,11 +214,13 @@ class SplitFileIntoChunks:
         # [i for i in list if i]
         return list(filter(None, namelist))
 
+    def is_empty_list(self, list):
+        return len(list) == 0
 
-    def _pattern_to_content(self, entry, pattern='(date:)\s*(\d{4}-\d{2}-\d{2})'):
-        """Find 'date: ' in elements of a list, and return the content of it'.
+    def _pattern_to_content(self, entry, pattern_of_tags='(date:)\s*(\d{4}-\d{2}-\d{2})'):
+        """Find the content of a tag, such as 'date: ', and return that content'.
 
-        e.g. element 'date: 2020-03-20' -> returns '2020-03-20'.
+        e.g. from 'date: 2020-03-20' -> returns '2020-03-20'.
 
         Google: python regex
 
@@ -230,10 +232,10 @@ class SplitFileIntoChunks:
 
         # Return the first match or None.
         for item in entry:
-            match = re.search(pattern, item)
+            match = re.search(pattern_of_tags, item)
             if match:
-                date = match.group(2)
-                return date
+                content = match.group(2)
+                return content
 
     # Basically, extract data by position is replaced by using regex, because 
     # sometimes I made spaces as typo such as 'date: ', 'date:', 'date:   ', etc.
