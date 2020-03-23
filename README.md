@@ -82,13 +82,13 @@ TODO:
 1. `SplitFileIntoChunks`
     - [x] Get `SplitFileIntoChunks` works in function-style first.
         - [x] Study `re` module.
-        - [ ] Study `fileinput` and process files in bulk.
-    - [ ] Use `fileinput` to process a list of filename
-    - [ ] Write a class to get a list of filename for fileinput
-      * https://python3-cookbook.readthedocs.io/zh_CN/latest/c05/p13_get_directory_listing.html
+        - [x] Study `fileinput` and process files in bulk.
+    - [x] Use `fileinput` to process a list of filename
+    - [x] Write a class to get a list of filename for fileinput
     - [x] Use debugger `RUN` in VS Code instead of `print()` blah blah blah.
     - [ ] Trim empty lines `\n` in the beginning and in the end of the output.
-    - [] Set source and target of files.
+    - [x] Handle exception when new filename is undefined. (e.g. no meta info from an entry.) 
+    - [x] Able to set source and target of files.
 
 #### ListDirectory
 
@@ -107,6 +107,7 @@ Use of pathlib:
     4.1 Google: python pathlib listdir -> python pathlib list subdirectories -> https://stackoverflow.com/questions/973473/getting-a-list-of-all-subdirectories-in-the-current-directory
 5. python pathlib list subdirectories -> https://pbpython.com/pathlib-intro.html
 6. Youtube: python pathlib -> [Python Pathlib Tutorial - JCharisTech & J-Secur1ty - YouTube](https://www.youtube.com/watch?v=HejUKf88Ua0) -> https://blog.jcharistech.com/2020/03/11/python-pathlib-tutorial/
+7. https://python3-cookbook.readthedocs.io/zh_CN/latest/c05/p13_get_directory_listing.html
 
 
 2020-03-21:

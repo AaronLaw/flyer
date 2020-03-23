@@ -209,7 +209,7 @@ class SplitFileIntoChunks:
             filename = self.new_filename_separator.join(list).strip()
             return filename
         except TypeError as err:
-            print(f'Cannot prepare new filename from {self.path}: {err}, using a default filename: "untitled"')
+            print(f'Cannot prepare new filename from {self.in_path}: {err}, using a default filename: "untitled"')
             filename = 'untilted'
             return filename
 
@@ -257,7 +257,12 @@ class SplitFileIntoChunks:
     def _write_chunks(self, content, filename, ext):
         """(Over-)Write content to file.
         """
-        filename = f"{filename}.{ext}"
+        out_path = Path(self.out_path)
+
+        if not (out_path.exists() and out_path.is_dir()):
+            Path.mkdir(out_path)
+
+        filename = f"{out_path}/{filename}.{ext}"
         with open(filename, mode='wt', encoding=self.encoding) as file_obj:
             for line in content:
                 file_obj.write(line)
