@@ -4,9 +4,14 @@
 #                  log requests, and supports undoable operations.
 # Reference: Mastering Python Design Patterns, Chapter 11.
 
-# TODO: Read source code of requests for human for reference.
+# TODO: Read source code of [requests for human](https://github.com/psf/requests) for reference.
 import os
 import sys
+
+try:
+    from pathlib import Path
+except ImportError:
+    print(f'Cannot import pathlib. Please use Python3.6+.')
 
 verbose = True
 
@@ -53,7 +58,8 @@ class ReadFile:
         if verbose:
             print(f"[reading file '{self.path}']")
         with open(self.path, mode='r', encoding='utf-8') as in_file:
-            print(in_file.read(), end='')
+            # print(in_file.read(), end='')
+            return in_file.read()
 
 
 class ShiftModificationTime:
@@ -127,11 +133,167 @@ class SplitFilename:
     def execute(self):
         pass
 
+    def undo(self):
+        pass
+
 
 class MarkdownToPdf:
     # Reference: https://github.com/wshuyi/demo-batch-markdown-to-pdf
     pass
 
+
+class SplitFileIntoChunks:
+    """Command that split a text file into chunks by a given delimiter.
+      For preparing text for Hexo, Pelican.
+
+    Given a list of files, a delimiter, and write chunks in folder 'chunks'.
+    #   file in -> SplitFileIntoChunks::get_list_of_content
+    #               -> REPEAT ::detemint_filename
+    #                  -> ::find_date
+    #                  -> ::get_date
+    #            -> ::write_chunks -> file out
+    """
+    def __init__(self, in_path, out_path, delimiter, filename_elements, 
+                    new_filename_sep='-', encoding='utf-8'):
+        self.in_path = in_path
+        self.out_path = out_path
+        self.delimiter = delimiter
+        self.filename_elements = filename_elements
+        self.new_filename_separator = new_filename_sep
+        self.encoding = encoding
+
+    def execute(self):
+        """Open a file, get a list of contents and breaks them into files.
+        """
+        try:
+            import itertools as it
+            import fileinput
+        except ImportError as err:
+            print(f'Cannot import itertools: {err}')
+
+        # with open(self.path, mode='rt', encoding=self.encoding) as file_obj:
+        with fileinput.input(files=self.in_path, mode='r') as file_obj:
+            for key, group in it.groupby(file_obj, lambda line: line.startswith(self.delimiter)):
+                if not key:
+                    # convert group object into lists for futher processing.
+                    entry = list(group)
+                    # Process each entry in each iteration.
+                    self._make_chunks_from_an_entry(entry)
+
+    def _make_chunks_from_an_entry(self, entry):
+        # Get new filename in entry by giving patterns.
+        new_filenames = [self._pattern_to_content(entry, v)
+                        for k,v in self.filename_elements.items()
+                        ]
+        filename = self._prepare_filename(new_filenames)
+        self._write_chunks(entry, filename, 'md')
+
+    def undo(self):
+        """Remove files in folder 'chunks'.
+        """
+        # TODO: implementation
+        pass
+        # if verbose:
+        #     print(f"[renaming '{self.dest}' back to '{self.src}']")
+        # os.rename(self.dest, self.src)
+
+    def _prepare_filename(self, list):
+        """Prepare filename by a list of data.
+        
+        Format: date.md, or date-title.md
+        """
+        list = self._remove_None_in_list(list)
+        try:
+            if self.is_empty_list(list):
+                raise TypeError
+            filename = self.new_filename_separator.join(list).strip()
+            return filename
+        except TypeError as err:
+            print(f'Cannot prepare new filename from {self.in_path}: {err}, using a default filename: "untitled"')
+            filename = 'untilted'
+            return filename
+
+    def _remove_None_in_list(self, namelist):
+        """Remove all None element to prevent NoneType error.
+        """
+        # [i for i in list if i]
+        return list(filter(None, namelist))
+
+    def is_empty_list(self, list):
+        return len(list) == 0
+
+    def _pattern_to_content(self, entry, pattern_of_tags='(date:)\s*(\d{4}-\d{2}-\d{2})'):
+        """Find the content of a tag, such as 'date: ', and return that content'.
+
+        e.g. from 'date: 2020-03-20' -> returns '2020-03-20'.
+
+        Google: python regex
+
+        Regex as the pattern:
+            date = '(date:)\s*(\d{4}-\d{2}-\d{2})' # e.g. 'date: 2020-03-20'
+            title = (title:)\s*(\S+\s*)+ e.g. 'title: Dear diary 電子日記  '
+        """
+        import re
+
+        # Return the first match or None.
+        for item in entry:
+            match = re.search(pattern_of_tags, item)
+            if match:
+                content = match.group(2)
+                return content
+
+    # Basically, extract data by position is replaced by using regex, because 
+    # sometimes I made spaces as typo such as 'date: ', 'date:', 'date:   ', etc.
+    #
+    # def get_date(date_line):
+    #   """to substring a string in a list:
+    #   Google: python extract a string in a list
+    #   content[1] is [date: 2020-03-15 22:22:15\n,] => string[5:15]
+    #   """"
+    #     start_idx = date_line.index('date: ')
+    #     end_idx = start_idx + 10
+    #     return date_line[start_idx:end_idx]
+
+    def _write_chunks(self, content, filename, ext):
+        """(Over-)Write content to file.
+        """
+        out_path = Path(self.out_path)
+
+        if not (out_path.exists() and out_path.is_dir()):
+            Path.mkdir(out_path)
+
+        filename = f"{out_path}/{filename}.{ext}"
+        with open(filename, mode='wt', encoding=self.encoding) as file_obj:
+            for line in content:
+                file_obj.write(line)
+            print(f'Writing {filename}')
+
+
+class ListDirectory:
+    """Command that list a directory.
+
+    pattern:
+        '*.txt' for all .txt file
+        '*' for all files
+        '**/*' for all files recusively
+    """
+    def __init__(self, path, pattern='*', recusive=False):
+        self.path, self.pattern, self.recusive = path, pattern, recusive
+        
+    def execute(self):
+        if verbose:
+            print(f"[listing '{self.path}']")
+        if not self.recusive:
+            for fpath in Path(self.path).glob(self.pattern):
+                yield fpath 
+        else:
+            for fpath in Path(self.path).rglob(self.pattern):
+                yield fpath 
+            
+    def undo(self):
+        """Nothing to undo in listing a directory.
+        """
+        pass
 
 def test_undo():
     orig_name, new_name = 'file1', 'file2'
@@ -165,9 +327,34 @@ def test_shift_modification_time():
     [c.execute() for c in commands]
     c = ShiftModificationTime(new_name, -2*time_delta).execute()
 
+def test_list_directory():
+    path = '/mnt/d/Syncthing/Documents/sync doc/Diary'
+
+    dir = ListDirectory(path, recusive=False)
+    recusive_dir = ListDirectory(path, recusive=True)
+
+    [print(item) for item in dir.execute()]
+    [print(item) for item in recusive_dir.execute()]
+        
+def test_split_file_into_chunks():
+    in_path, file_pattern = Path('/mnt/d/Syncthing/Sites/Python/flyer/sample_data'), '*.md'
+    out_path = Path('/mnt/z/output/')
+    delimiter = '----'
+    # {'title': pattern}
+    patterns_for_chunks_filename = {'date':'(date:)\s*(\d{4}-\d{2}-\d{2})', # e.g. 'date: 2020-03-20'
+                         'title':'(title:)\s*(\S+\s*)+'}          # e.g. 'title: Dear diary 電子日記'
+
+    # files = Path('./sample_data/2020-03.md')
+    files_generator = ListDirectory(in_path, pattern=file_pattern, recusive=True).execute()
+    filelist = [file for file in files_generator]
+    chunks = SplitFileIntoChunks(filelist, out_path ,delimiter, patterns_for_chunks_filename, '-')
+    chunks.execute()
+
 def main():
-    test_undo()
+    # test_undo()
     # test_shift_modification_time()
+    test_split_file_into_chunks()
+    # test_list_directory()
 
 if __name__ == "__main__":
     main()
