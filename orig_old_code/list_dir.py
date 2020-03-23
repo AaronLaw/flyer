@@ -22,6 +22,7 @@ def unify_ext_with_pathlib(path):
         # fpath.rename(fpath.with_suffix('.csv'))
         print(fpath)
 
+# Reference: Google: python pathlib listdir -> https://stackoverflow.com/questions/39909655/listing-of-all-files-in-directory
 from pathlib import Path
 def list_path(path):
     # for fpath in Path(path).glob('**'):

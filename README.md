@@ -2,14 +2,27 @@
 
 File operations for human.
 
-It should follow PEP8 coding style and coded in OOP-style.
+It should follow PEP8 coding style and coded in OOP-style. It's better to have annotations and type hints for code readability.
+
+Here quoted from `import this`:
+* Explicit is better than implicit.
+* Simple is better than complex.
+* Readability counts.
+* Errors should never pass silently.
+* Unless explicitly silenced.
+* Now is better than never.
+* Although never is often better than *right* now.
+* If the implementation is hard to explain, it's a bad idea.
+* If the implementation is easy to explain, it may be a good idea.
+* Namespaces are one honking great idea -- let's do more of those!
 
 #### Reference:
 
 * Introducing Python, 2nd Edition
+    * Data classes: [dataclasses — Data Classes](https://docs.python.org/3/library/dataclasses.html), [The Ultimate Guide to Data Classes in Python 3.7 – Real Python](https://realpython.com/python-data-classes/), [attrs](https://www.attrs.org/en/stable/), [PEP 557 -- Data Classes](https://www.python.org/dev/peps/pep-0557/)
+    * Annotation: [PEP 3107 -- Function Annotations](https://www.python.org/dev/peps/pep-3107/), [PEP 526 -- Syntax for Variable Annotations](https://www.python.org/dev/peps/pep-0526/), [PEP 484 -- Type Hints](https://www.python.org/dev/peps/pep-0484/)
 * Read source code of [requests for human](https://github.com/psf/requests) for reference.
 * Youtube: python command pattern
-* https://www.attrs.org/en/stable/
 * https://awesome-python.com
 * Google: python text manipulation library
 * Google: python regex -> glob
@@ -23,6 +36,7 @@ It should follow PEP8 coding style and coded in OOP-style.
 ## Tech notes
 
 I combain some old code, that I wrote in function-style, and made something new in command pattern.
+Try to learn and implement something new to me here, such as regular expression (regex, or `re`), `glob`, pathlib, data class, design patterns, the debugger in VS Code, etc... 
 
 #### RenameFile, CreateFile, ReadFile
 
@@ -76,6 +90,8 @@ with open(filename,'r') as f:
 The debugger in VS Code rocks! I can't make this the prototype (a.k.a commit d729a18) works without it. I cannot know the correct structure of `it.groupby()` without using the debugger.
 No more `print()` but breakpoints.
 
+2020-03-23:
+1. What if I use data classes for meta data of an entry?
 
 
 TODO:
@@ -89,6 +105,7 @@ TODO:
     - [ ] Trim empty lines `\n` in the beginning and in the end of the output.
     - [x] Handle exception when new filename is undefined. (e.g. no meta info from an entry.) 
     - [x] Able to set source and target of files.
+    - [ ] Build meta data (for making new filename) as dataclasses.
 
 #### ListDirectory
 
@@ -120,10 +137,12 @@ Use of generator to generat a list of file in a directory:
     > The difference is that, while a return statement terminates a function entirely, yield statement pauses the function saving all its states and later continues from there on successive calls.
     1.2 Google: python generator -> https://wiki.python.org/moin/Generators
 
+
 ----
 
 General TODO:
 - [ ] Read and study source code of requests for human as a coding reference. 
+- [ ] Use ABC and class inheritance to govern commands.
 
 1. Google: python word freq
 2. Google: python word freq in text 
