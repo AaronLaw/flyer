@@ -21,6 +21,7 @@ Here quoted from `import this`:
 * Introducing Python, 2nd Edition
     * Data classes: [dataclasses — Data Classes](https://docs.python.org/3/library/dataclasses.html), [The Ultimate Guide to Data Classes in Python 3.7 – Real Python](https://realpython.com/python-data-classes/), [attrs](https://www.attrs.org/en/stable/), [PEP 557 -- Data Classes](https://www.python.org/dev/peps/pep-0557/)
     * Annotation: [PEP 3107 -- Function Annotations](https://www.python.org/dev/peps/pep-3107/), [PEP 526 -- Syntax for Variable Annotations](https://www.python.org/dev/peps/pep-0526/), [PEP 484 -- Type Hints](https://www.python.org/dev/peps/pep-0484/)
+* [Type hints for busy Python programmers](https://inventwithpython.com/blog/2019/11/24/type-hints-for-busy-python-programmers/)
 * Read source code of [requests for human](https://github.com/psf/requests) for reference.
 * Youtube: python command pattern
 * https://awesome-python.com
