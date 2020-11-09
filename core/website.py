@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import List
 
 import requests
 
@@ -45,3 +46,21 @@ class UpdateWebsiteStatusCode:
 
     def execute(self):
         self.website.status_code = self.website.get_status_code()
+
+
+def init_websites(sites) -> List:
+    """
+    Turn the dict of sites into Website objects.
+    """
+    websites = [] # a list of website objects converted from a dict
+    for k, v in sites.items():
+        websites.append(Website(k, v))
+
+    return websites
+
+def update_website_status(sites) -> None:
+    """
+    Check status and update the status of sites.
+    """
+    for site in sites:
+        site.status_code = site.get_status_code()
