@@ -1,14 +1,20 @@
+from dataclasses import dataclass, field
+
 import requests
 
+@dataclass
 class Website:
     """
     Representing a website.
+
+    :param name: name of the website.
+    :param url: URL of the website object.
+    :param status_code: status code of the website.
     """
-    def __init__(self, name, url):
-        self.name = name
-        self.url = url
-        self.status_code = 0
-        
+    name: str
+    url: str
+    status_code: int = 0
+
     def get_status_code(self) -> int:
         """
         Return status code of a site.
