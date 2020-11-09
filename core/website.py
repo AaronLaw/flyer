@@ -34,3 +34,14 @@ class Website:
         """
         response = requests.get(self.url, timeout=3)
         return response.headers
+
+
+class UpdateWebsiteStatusCode:
+    """
+    Command that update status codes of a website.
+    """
+    def __init__(self, website):
+        self.website = website
+
+    def execute(self):
+        self.website.status_code = self.website.get_status_code()
