@@ -138,6 +138,34 @@ Use of generator to generat a list of file in a directory:
     1.2 Google: python generator -> https://wiki.python.org/moin/Generators
 
 
+##### check_website.py
+
+2020-10-20
+
+Run and check if a site is up.
+
+Reference:
+* https://realpython.com/python-requests/
+
+
+```python
+## The original prototype ##
+
+import requests
+
+sites = {
+    'Google':   'https://www.google.com',
+    'Yahoo':    'https://www.yahoo.com',
+    'YouTube':  'https://www.youtube.com'
+    }
+
+for k, v in sites.items():
+    # print(f'{k} -> {v}')
+    response = requests.get(v)
+    print(f'{k} => {response.status_code}')
+    
+```
+
 ----
 
 General TODO:
