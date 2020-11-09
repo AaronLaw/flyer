@@ -2,12 +2,12 @@ import requests
 
 class Website:
     """
-    Representing a website
+    Representing a website.
     """
     def __init__(self, name, url):
         self.name = name
         self.url = url
-        self.status_code
+        self.status_code = 0
         
     def get_status_code(self) -> int:
         """
