@@ -55,6 +55,7 @@ class InitializeWebsites:
     Turn a dict of sites into Website objects and set status_code to 0.
     
     :param sites: a dict of sites that is name:url pairs ('name': 'url')
+    :rtype: a list of website objects.
     """
     def __init__(self, sites):
         self.sites = sites
@@ -68,6 +69,8 @@ class InitializeWebsites:
 class UpdateWebsitesStatus:
     """
     Check status of sites and update internal status_code.
+
+    :param sites: a list of website objects.
     """
     def __init__(self, sites):
         self.sites = sites
