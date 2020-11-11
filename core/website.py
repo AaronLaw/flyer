@@ -61,8 +61,7 @@ class InitializeWebsites:
         self.websites = []
 
     def execute(self) -> List:
-        for k, v in self.sites.items():
-            self.websites.append(Website(k, v))
+        self.websites = [Website(k, v) for k, v in self.sites.items()]
         return self.websites
 
 
