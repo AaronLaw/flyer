@@ -46,6 +46,7 @@ class UpdateWebsiteStatusCode:
 
     def execute(self):
         self.website.status_code = self.website.get_status_code()
+        return self.website.status_code
 
 
 class InitializeWebsites:
