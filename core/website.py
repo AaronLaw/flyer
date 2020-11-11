@@ -48,15 +48,24 @@ class UpdateWebsiteStatusCode:
         self.website.status_code = self.website.get_status_code()
 
 
-def init_websites(sites) -> List:
+class InitializeWebsites:
     """
-    Turn the dict of sites into Website objects.
-    """
-    websites = [] # a list of website objects converted from a dict
-    for k, v in sites.items():
-        websites.append(Website(k, v))
+    Command that initialize a list of website objects.
 
-    return websites
+    Turn a dict of sites into Website objects and set status_code to 0.
+    
+    :param sites: a dict of sites that is name:url pairs ('name': 'url')
+    """
+    def __init__(self, sites):
+        self.sites = sites
+        self.websites = []
+
+    def execute(self) -> List:
+        for k, v in self.sites.items():
+            self.websites.append(Website(k, v))
+        return self.websites
+
+
 
 def update_website_status(sites) -> None:
     """
