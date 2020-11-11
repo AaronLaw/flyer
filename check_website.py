@@ -4,7 +4,7 @@
 
 from typing import List
 from core.website import Website
-from core.website import InitializeWebsites, update_website_status
+from core.website import InitializeWebsites, UpdateWebsitesStatus
 
 import requests
 
@@ -19,7 +19,7 @@ websites = {} # class variable shared by all instances
 
 def main():
     websites = InitializeWebsites(sites).execute()
-    update_website_status(websites)
+    UpdateWebsitesStatus(websites).execute()
     display_status_code(websites)
 
 def display_status_code(sites) -> None:

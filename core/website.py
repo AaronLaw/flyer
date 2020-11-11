@@ -66,10 +66,13 @@ class InitializeWebsites:
         return self.websites
 
 
+class UpdateWebsitesStatus:
+    """
+    Check status of sites and update internal status_code.
+    """
+    def __init__(self, sites):
+        self.sites = sites
 
-def update_website_status(sites) -> None:
-    """
-    Check status and update the status of sites.
-    """
-    for site in sites:
-        site.status_code = site.get_status_code()
+    def execute(self) -> None:
+        for site in self.sites:
+            site.status_code = site.get_status_code()
