@@ -77,4 +77,4 @@ class UpdateWebsitesStatus:
 
     def execute(self) -> None:
         for site in self.sites:
-            site.status_code = site.get_status_code()
+            site.status_code = UpdateWebsiteStatusCode(site).execute()
