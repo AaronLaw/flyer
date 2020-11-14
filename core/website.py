@@ -4,6 +4,7 @@ from typing import List
 import requests
 from requests.exceptions import RequestException, Timeout
 
+requests_timeout = 3 # second
 @dataclass
 class Website:
     """
@@ -12,10 +13,12 @@ class Website:
     :param name: name of the website.
     :param url: URL of the website object.
     :param status_code: status code of the website.
+    :param timeout: response time of a server for requests.get(). When the server response exceeds the timeout, a Timeout exception occurs.
     """
     name: str
     url: str
     status_code: int = 0
+    timeout: float = requests_timeout
 
     def get_status_code(self) -> int:
         """
@@ -25,7 +28,7 @@ class Website:
         :rtype: int
         """
         try:
-            response = requests.get(self.url, timeout=3)
+            response = requests.get(self.url, timeout=self.timeout)
         except (RequestException, Timeout) as err:
             print(f'Error occurs: {err}')
         else:
@@ -38,7 +41,7 @@ class Website:
         :return: headers of a site
         :rtype: str
         """
-        response = requests.get(self.url, timeout=3)
+        response = requests.get(self.url, timeout=self.timeout)
         return response.headers
 
 
