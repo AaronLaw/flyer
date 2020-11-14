@@ -10,6 +10,7 @@ import requests
 
 sites = {
     'Google':   'https://www.google.com',
+    'NON existing Google':'https://www.nogoogle.com', # site that doesn't exist
     'Yahoo':    'https://www.yahoo.com',
     'YouTube':  'https://www.youtube.com'
     }

@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import List
 
 import requests
+from requests.exceptions import RequestException, Timeout
 
 @dataclass
 class Website:
@@ -23,8 +24,12 @@ class Website:
         :return: a status code of a site
         :rtype: int
         """
-        response = requests.get(self.url, timeout=3)
-        return response.status_code
+        try:
+            response = requests.get(self.url, timeout=3)
+        except (RequestException, Timeout) as err:
+            print(f'Error occurs: {err}')
+        else:
+            return response.status_code
 
     def get_headers(self) -> str:
         """

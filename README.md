@@ -144,6 +144,9 @@ Use of generator to generat a list of file in a directory:
 
 Run and check if a site is up.
 
+- [x] TODO: exceptions when connecting non-existing Websites
+- [ ] TODO: [timeout](https://requests.readthedocs.io/en/master/user/quickstart/): If no timeout is specified explicitly, requests do not time out.
+
 Reference:
 * https://realpython.com/python-requests/
 
