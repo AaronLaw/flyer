@@ -5,6 +5,7 @@ import requests
 from requests.exceptions import RequestException, Timeout
 
 requests_timeout = 3 # second
+headers = {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0'}
 @dataclass
 class Website:
     """
@@ -28,7 +29,7 @@ class Website:
         :rtype: int
         """
         try:
-            response = requests.get(self.url, timeout=self.timeout)
+            response = requests.get(self.url, headers=headers,timeout=self.timeout)
         except (RequestException, Timeout) as err:
             print(f'Error occurs: {err}')
         else:
@@ -41,7 +42,7 @@ class Website:
         :return: headers of a site
         :rtype: str
         """
-        response = requests.get(self.url, timeout=self.timeout)
+        response = requests.get(self.url, headers=headers, timeout=self.timeout)
         return response.headers
 
 

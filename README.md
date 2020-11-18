@@ -145,10 +145,10 @@ Use of generator to generat a list of file in a directory:
 Run and check if a site is up.
 
 - [x] TODO: exceptions when connecting non-existing Websites
-- [ ] TODO: [timeout](https://requests.readthedocs.io/en/master/user/quickstart/): If no timeout is specified explicitly, requests do not time out.
+- [x] TODO: [timeout](https://requests.readthedocs.io/en/master/user/quickstart/): If no timeout is specified explicitly, requests do not time out.
 - [ ] TODO: color text: shows text in green when response OK; shows in red for alert.
 - [ ] TODO: timestamp: show timestamp (~[AMD 5600X_5800X_5900X_5950X Stock Checker - With audio alerts - !info - YouTube](https://www.youtube.com/watch?v=-_y5CKZFA7k))  -> maybe I can keep status code records in database?
-- [ ] TODO: header: add `header` of requests object. (~[Build A Python App That Tracks Amazon Prices! - YouTube](https://www.youtube.com/watch?v=Bg9r_yLk7VY&list=PLDyQo7g0_nsULCDha3lv7rw2t6AnhNTHV&index=3))
+- [x] TODO: header: add `header` of requests object. (~[Build A Python App That Tracks Amazon Prices! - YouTube](https://www.youtube.com/watch?v=Bg9r_yLk7VY&list=PLDyQo7g0_nsULCDha3lv7rw2t6AnhNTHV&index=3))
 
 Terminal color text:
 
@@ -189,4 +189,3 @@ General TODO:
 #### Possible new classes
 
 FindFile, SplitFilename, MarkdownToPdf, ListDirectory, Tree
- 
