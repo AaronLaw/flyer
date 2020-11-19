@@ -24,8 +24,8 @@ def main():
     display_status_code(websites)
 
 def display_status_code(sites) -> None:
-    for site in sites:
-        print(f'{site.name} => {site.status_code}')
+    for count, site in enumerate(sites):
+        print(f'{count}. {site.name} => {site.status_code}')
 
 if __name__ == "__main__":
     main()
